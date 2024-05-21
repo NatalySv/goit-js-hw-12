@@ -15,10 +15,13 @@ export const refs = {
 };
 
 export let querySearch = null;
+export const per_page = 15;
+export let page = 1;
+export const maxPage = Math.ceil(200 / per_page);
 
 refs.form.addEventListener('submit', onSubmit);
 
-function onSubmit(event) {
+async function onSubmit(event) {
   event.preventDefault();
   const inputValue = refs.input.value;
 
@@ -35,7 +38,7 @@ function onSubmit(event) {
 
   querySearch = inputValue;
   refs.list.innerHTML = `<span class="loader"></span>`;
-  getSearch()
+  await getSearch()
     .then(data => {
       if (!data.hits.length) {
         refs.list.innerHTML = '';
