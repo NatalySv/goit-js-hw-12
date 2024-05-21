@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { refs, querySearch } from '../main';
 
 export function getSearch() {
