@@ -24,7 +24,7 @@ const messageBlank = `Please enter your search query, the field cannot be blank!
 const messageSorry = `Sorry, there are no images matching your search query. Please try again!`;
 
 refs.form.addEventListener('submit', onSubmit);
-// refs.loadBtn.addEventListener('click', onClickLoad);
+refs.loadBtn.addEventListener('click', onClickLoad);
 
 async function onSubmit(event) {
   event.preventDefault();
@@ -32,8 +32,7 @@ async function onSubmit(event) {
   const inputValue = refs.input.value;
 
   if (!inputValue) {
-    refs.list.innerHTML = '';
-    warningMessage(messageBlank);
+    clearPage(messageBlank);
     return;
   }
 
@@ -42,18 +41,22 @@ async function onSubmit(event) {
   await getSearch()
     .then(data => {
       if (!data.hits.length) {
-        refs.list.innerHTML = '';
-        warningMessage(messageSorry);
+        clearPage(messageSorry);
         return;
       }
       refs.list.innerHTML = createMarkup(data.hits);
       lightbox.refresh();
+      refs.loadBtn.classList.remove('is-hidden');
     })
     .catch(error => console.log('catch', error));
   refs.form.reset();
 }
 
-function warningMessage(message) {
+async function onClickLoad(event) {}
+
+function clearPage(message) {
+  refs.list.innerHTML = '';
+  refs.loadBtn.classList.add('is-hidden');
   return iziToast.error({
     ...iziOptions,
     message,
