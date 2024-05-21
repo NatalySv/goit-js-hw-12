@@ -12,6 +12,7 @@ export const refs = {
   form: document.querySelector('.task-form'),
   input: document.querySelector('.form-input'),
   list: document.querySelector('.gallery'),
+  loadBtn: document.querySelector('.load-btn'),
 };
 
 export let querySearch = null;
@@ -19,20 +20,20 @@ export const per_page = 15;
 export let page = 1;
 export const maxPage = Math.ceil(200 / per_page);
 
+const messageBlank = `Please enter your search query, the field cannot be blank!`;
+const messageSorry = `Sorry, there are no images matching your search query. Please try again!`;
+
 refs.form.addEventListener('submit', onSubmit);
+// refs.loadBtn.addEventListener('click', onClickLoad);
 
 async function onSubmit(event) {
   event.preventDefault();
+  page = 1;
   const inputValue = refs.input.value;
 
   if (!inputValue) {
     refs.list.innerHTML = '';
-    iziToast.error({
-      ...iziOptions,
-      message: `Please enter your search query, the field cannot be blank!`,
-      backgroundColor: 'rgb(239, 64, 64)',
-      iconUrl: iconError,
-    });
+    warningMessage(messageBlank);
     return;
   }
 
@@ -42,12 +43,7 @@ async function onSubmit(event) {
     .then(data => {
       if (!data.hits.length) {
         refs.list.innerHTML = '';
-        iziToast.error({
-          ...iziOptions,
-          message: `Sorry, there are no images matching your search query. Please try again!`,
-          backgroundColor: 'rgb(239, 64, 64)',
-          iconUrl: iconError,
-        });
+        warningMessage(messageSorry);
         return;
       }
       refs.list.innerHTML = createMarkup(data.hits);
@@ -57,9 +53,18 @@ async function onSubmit(event) {
   refs.form.reset();
 }
 
+function warningMessage(message) {
+  return iziToast.error({
+    ...iziOptions,
+    message,
+    backgroundColor: 'rgb(239, 64, 64)',
+    iconUrl: iconError,
+  });
+}
+
 const iziOptions = {
   id: 'myIziToast',
-  title: 'Error',
+  title: 'Warning',
   titleColor: 'rgb(255, 255, 255)',
   titleSize: '16',
   messageColor: 'rgb(255, 255, 255)',
