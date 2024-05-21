@@ -22,6 +22,7 @@ export const maxPage = Math.ceil(200 / per_page);
 
 const messageBlank = `Please enter your search query, the field cannot be blank!`;
 const messageSorry = `Sorry, there are no images matching your search query. Please try again!`;
+const messageEnd = "We're sorry, but you've reached the end of search results.";
 
 refs.form.addEventListener('submit', onSubmit);
 refs.loadBtn.addEventListener('click', onClickLoad);
@@ -29,9 +30,11 @@ refs.loadBtn.addEventListener('click', onClickLoad);
 async function onSubmit(event) {
   event.preventDefault();
   page = 1;
+  refs.loadBtn.classList.add('is-hidden');
   const inputValue = refs.input.value;
 
   if (!inputValue) {
+    refs.list.innerHTML = '';
     clearPage(messageBlank);
     return;
   }
@@ -41,21 +44,40 @@ async function onSubmit(event) {
   await getSearch()
     .then(data => {
       if (!data.hits.length) {
+        refs.list.innerHTML = '';
         clearPage(messageSorry);
         return;
       }
       refs.list.innerHTML = createMarkup(data.hits);
       lightbox.refresh();
       refs.loadBtn.classList.remove('is-hidden');
+      page += 1;
     })
     .catch(error => console.log('catch', error));
   refs.form.reset();
 }
 
-async function onClickLoad(event) {}
+async function onClickLoad(event) {
+  if (page > maxPage) {
+    clearPage(messageEnd);
+    return;
+  }
+  await getSearch()
+    .then(data => {
+      // if (!data.hits.length) {
+      //   refs.list.innerHTML = '';
+      //   clearPage(messageSorry);
+      //   return;
+      // }
+      refs.list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
+      lightbox.refresh();
+      // refs.loadBtn.classList.remove('is-hidden');
+      page += 1;
+    })
+    .catch(error => console.log('catch', error));
+}
 
 function clearPage(message) {
-  refs.list.innerHTML = '';
   refs.loadBtn.classList.add('is-hidden');
   return iziToast.error({
     ...iziOptions,
