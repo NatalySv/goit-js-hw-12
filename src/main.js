@@ -20,6 +20,7 @@ export let querySearch = null;
 export const per_page = 15;
 export let page = 1;
 
+let heightItem = null;
 let numberImgAll = null;
 let maxPage = null;
 
@@ -53,6 +54,12 @@ async function onSubmit(event) {
       }
       refs.list.innerHTML = createMarkup(data.hits);
       lightbox.refresh();
+      const itemParams = refs.list.firstChild.getBoundingClientRect();
+      heightItem = itemParams.height * 2;
+      window.scrollBy({
+        top: heightItem,
+        behavior: 'smooth',
+      });
       page += 1;
       numberImgAll = data.totalHits;
       maxPage = Math.ceil(numberImgAll / per_page);
@@ -74,6 +81,10 @@ async function onClickLoad(event) {
     .then(data => {
       refs.list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
       lightbox.refresh();
+      window.scrollBy({
+        top: heightItem,
+        behavior: 'smooth',
+      });
       page += 1;
       refs.loadWrapp.lastChild.remove();
       if (page > maxPage) {
