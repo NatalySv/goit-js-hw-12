@@ -65,10 +65,7 @@ async function onSubmit(event) {
 }
 
 async function onClickLoad(event) {
-  if (page > maxPage) {
-    clearPage(messageEnd);
-    return;
-  }
+  refs.loadBtn.classList.add('is-hidden');
   refs.loadWrapp.insertAdjacentHTML(
     'beforeend',
     `<span class="loader"></span>`
@@ -79,6 +76,11 @@ async function onClickLoad(event) {
       lightbox.refresh();
       page += 1;
       refs.loadWrapp.lastChild.remove();
+      if (page > maxPage) {
+        clearPage(messageEnd);
+        return;
+      }
+      refs.loadBtn.classList.remove('is-hidden');
     })
     .catch(error => console.log('catch', error));
 }
