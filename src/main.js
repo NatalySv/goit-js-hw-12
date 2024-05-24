@@ -12,6 +12,7 @@ export const refs = {
   form: document.querySelector('.task-form'),
   input: document.querySelector('.form-input'),
   list: document.querySelector('.gallery'),
+  loadWrapp: document.querySelector('.wrapper-btn'),
   loadBtn: document.querySelector('.load-btn'),
 };
 
@@ -52,10 +53,12 @@ async function onSubmit(event) {
       }
       refs.list.innerHTML = createMarkup(data.hits);
       lightbox.refresh();
-      refs.loadBtn.classList.remove('is-hidden');
       page += 1;
       numberImgAll = data.totalHits;
       maxPage = Math.ceil(numberImgAll / per_page);
+      if (page <= maxPage) {
+        refs.loadBtn.classList.remove('is-hidden');
+      }
     })
     .catch(error => console.log('catch', error));
   refs.form.reset();
@@ -66,11 +69,16 @@ async function onClickLoad(event) {
     clearPage(messageEnd);
     return;
   }
+  refs.loadWrapp.insertAdjacentHTML(
+    'beforeend',
+    `<span class="loader"></span>`
+  );
   await getSearch()
     .then(data => {
       refs.list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
       lightbox.refresh();
       page += 1;
+      refs.loadWrapp.lastChild.remove();
     })
     .catch(error => console.log('catch', error));
 }
