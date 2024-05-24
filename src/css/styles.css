@@ -72,6 +72,7 @@ body {
   padding-left: 156px;
   padding-right: 156px;
   list-style-type: none;
+  margin-bottom: 24px;
 }
 
 .gallery-item {
@@ -84,6 +85,7 @@ body {
 }
 
 .gallery-item:hover {
+  box-shadow: 3px 3px 6px 2px #65972c;
   transform: scale(1.04, 1.04);
 }
 

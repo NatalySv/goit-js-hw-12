@@ -18,7 +18,9 @@ export const refs = {
 export let querySearch = null;
 export const per_page = 15;
 export let page = 1;
-export const maxPage = Math.ceil(200 / per_page);
+
+let numberImgAll = null;
+let maxPage = null;
 
 const messageBlank = `Please enter your search query, the field cannot be blank!`;
 const messageSorry = `Sorry, there are no images matching your search query. Please try again!`;
@@ -31,7 +33,7 @@ async function onSubmit(event) {
   event.preventDefault();
   page = 1;
   refs.loadBtn.classList.add('is-hidden');
-  const inputValue = refs.input.value;
+  const inputValue = refs.input.value.trim();
 
   if (!inputValue) {
     refs.list.innerHTML = '';
@@ -52,6 +54,8 @@ async function onSubmit(event) {
       lightbox.refresh();
       refs.loadBtn.classList.remove('is-hidden');
       page += 1;
+      numberImgAll = data.totalHits;
+      maxPage = Math.ceil(numberImgAll / per_page);
     })
     .catch(error => console.log('catch', error));
   refs.form.reset();
@@ -64,14 +68,8 @@ async function onClickLoad(event) {
   }
   await getSearch()
     .then(data => {
-      // if (!data.hits.length) {
-      //   refs.list.innerHTML = '';
-      //   clearPage(messageSorry);
-      //   return;
-      // }
       refs.list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
       lightbox.refresh();
-      // refs.loadBtn.classList.remove('is-hidden');
       page += 1;
     })
     .catch(error => console.log('catch', error));
