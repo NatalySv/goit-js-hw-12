@@ -67,7 +67,9 @@ async function onSubmit(event) {
         refs.loadBtn.classList.remove('is-hidden');
       }
     })
-    .catch(error => console.log('catch', error));
+    .catch(error => {
+      getError(error);
+    });
   refs.form.reset();
 }
 
@@ -93,7 +95,10 @@ async function onClickLoad(event) {
       }
       refs.loadBtn.classList.remove('is-hidden');
     })
-    .catch(error => console.log('catch', error));
+    .catch(error => {
+      refs.loadWrapp.lastChild.remove();
+      getError(error);
+    });
 }
 
 function clearPage(message) {
@@ -101,6 +106,15 @@ function clearPage(message) {
   return iziToast.error({
     ...iziOptions,
     message,
+    backgroundColor: 'rgb(239, 64, 64)',
+    iconUrl: iconError,
+  });
+}
+
+function getError(error) {
+  return iziToast.error({
+    ...iziOptionsErr,
+    message: `${error}`,
     backgroundColor: 'rgb(239, 64, 64)',
     iconUrl: iconError,
   });
@@ -114,6 +128,16 @@ const iziOptions = {
   messageColor: 'rgb(255, 255, 255)',
   messageSize: '16',
   position: 'topRight',
+};
+
+const iziOptionsErr = {
+  id: 'myIziToast',
+  title: 'Error',
+  titleColor: 'rgb(255, 255, 255)',
+  titleSize: '16',
+  messageColor: 'rgb(255, 255, 255)',
+  messageSize: '16',
+  position: 'topCenter',
 };
 
 const lightbox = new SimpleLightbox('.gallery-item a', {
